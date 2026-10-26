@@ -90,4 +90,4 @@ td.wrap { white-space: normal; min-width: 260px; }
 #matrix tbody tr.selected td, #matrix tbody tr.selected th { background: rgba(42, 109, 244, 0.14); }
 #matrix td.best { color: var(--accent); font-weight: 700; }
 #matrix td.na { color: var(--muted); font-size: 0.8rem; }
-#matrix .spread { border-left: 1px solid var(--line); font-weight: 600; }
+#matrix .spread { border-right: 1px solid var(--line); font-weight: 600; }

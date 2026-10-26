@@ -235,7 +235,7 @@ $('#matrix-hint').textContent =
   '경계값에는 그 아래 구간 할인율이 적용됩니다. 행마다 가장 유리한 값을 강조했고, 행을 누르면 그 거리로 이동합니다. ' +
   '최대−최소는 할인율이 있는 보험사끼리의 차이(%p)이며, 할인 없음·미확인은 0%로 보지 않고 제외합니다.'
 $('#matrix thead').innerHTML =
-  `<tr><th>주행거리</th>${insurers.map((ins) => `<th class="num"><span class="swatch" style="background:${colorOf(ins)}"></span>${esc(ins.name)}</th>`).join('')}<th class="num spread" title="할인율이 있는 보험사 중 최대-최소. 할인 없음·미확인은 제외">최대−최소</th></tr>`
+  `<tr><th>주행거리</th><th class="num spread" title="할인율이 있는 보험사 중 최대-최소. 할인 없음·미확인은 제외">최대−최소</th>${insurers.map((ins) => `<th class="num"><span class="swatch" style="background:${colorOf(ins)}"></span>${esc(ins.name)}</th>`).join('')}</tr>`
 $('#matrix tbody').addEventListener('click', (e) => {
   const km = (e.target as HTMLElement).closest('tr')?.dataset.km
   if (km) select(Number(km))
@@ -265,7 +265,7 @@ function renderMatrix() {
     })
     const sel = row.km === selectedKm ? ' class="selected"' : ''
     const spread = row.spread === null ? '<span class="na">-</span>' : `${row.spread}%p`
-    return `<tr data-km="${row.km}"${sel}><th scope="row">${fmtKm(row.km)}</th>${cells.join('')}<td class="num spread">${spread}</td></tr>`
+    return `<tr data-km="${row.km}"${sel}><th scope="row">${fmtKm(row.km)}</th><td class="num spread">${spread}</td>${cells.join('')}</tr>`
   }).join('')
 }
 
