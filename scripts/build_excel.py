@@ -117,11 +117,11 @@ def build():
                 check_table(ins)
                 end = row - 1
                 ranges[ins["id"]] = {
-                    "max": f"{TABLE_SHEET}!$E${start}:$E${end}",
-                    "rate": f"{TABLE_SHEET}!$G${start}:$G${end}",
-                    "label": f"{TABLE_SHEET}!$H${start}:$H${end}",
-                    "min": f"{TABLE_SHEET}!$C${start}:$C${end}",
-                    "last": f"{TABLE_SHEET}!$E${end}",
+                    "max": f"'{TABLE_SHEET}'!$E${start}:$E${end}",
+                    "rate": f"'{TABLE_SHEET}'!$G${start}:$G${end}",
+                    "label": f"'{TABLE_SHEET}'!$H${start}:$H${end}",
+                    "min": f"'{TABLE_SHEET}'!$C${start}:$C${end}",
+                    "last": f"'{TABLE_SHEET}'!$E${end}",
                     "inclusive": bands[0]["max_inclusive"] if len({x["max_inclusive"] for x in bands}) == 1 else None,
                 }
     autosize(tb, [12, 6, 10, 9, 10, 9, 10, 26, 14, 14, 30, 12, 12, 50, 11, 16])
