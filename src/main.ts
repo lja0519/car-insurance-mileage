@@ -263,6 +263,9 @@ function renderTable() {
 
 function renderSummary() {
   $('#basis').textContent = `${raw.meta.comparison_basis} · 자료 수집일 ${raw.meta.collected_at}`
+  $('#notice').textContent =
+    `참고용 자료입니다. 할인율은 ${raw.meta.collected_at}에 각 보험사 다이렉트 공식 페이지에서 수집한 값으로, 보험사가 수시로 바꾸므로 ` +
+    '가입 전 반드시 해당 보험사에서 다시 확인하세요. 할인액은 입력한 보험료 전체 기준의 추정치이며 보험 가입 권유가 아닙니다.'
   $('#summary tbody').innerHTML = insurers
     .map((ins) => {
       const m = maxDiscount(ins)

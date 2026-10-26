@@ -34,6 +34,10 @@ main { max-width: 1180px; margin: 0 auto; padding: 16px; }
 h1 { font-size: 1.4rem; margin: 8px 0 4px; }
 h2 { font-size: 1.05rem; margin: 0 0 8px; }
 .sub, .hint { color: var(--muted); font-size: 0.85rem; margin: 0 0 8px; }
+.notice {
+  margin: 8px 0 0; padding: 8px 12px; font-size: 0.85rem;
+  border: 1px solid var(--warn); border-left-width: 4px; border-radius: 6px; color: var(--text);
+}
 .panel {
   background: var(--panel);
   border: 1px solid var(--line);
