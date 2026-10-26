@@ -43,7 +43,7 @@ h2 { font-size: 1.05rem; margin: 0 0 8px; }
 }
 .controls { display: grid; gap: 12px; }
 .km-input { display: flex; align-items: center; gap: 12px; font-weight: 600; flex-wrap: wrap; }
-.km-input { justify-content: space-between; max-width: 360px; }
+.km-input { display: grid; grid-template-columns: 7.5em auto; justify-content: start; }
 .km-input input {
   width: 9em; font-size: 1.1rem; padding: 6px 8px; text-align: right;
   border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--text);
