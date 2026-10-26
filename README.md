@@ -23,11 +23,11 @@ npm run excel      # data/raw_discounts.json → 마일리지_할인_계산기.x
 | 경로 | 내용 |
 |---|---|
 | `data/raw_discounts.json` | **원본 데이터**. 보험사별 공식 구간·할인율·경계 포함 규칙·할인 방식·사진 조건·기준일·출처(URL, 인용문, 확인일). 비교 기준 표(`primary`)와 별도 표(`others`: 전기차·연령·차급·채널·구표)를 분리 |
-| `src/lib/normalize.ts` | **그래프용 데이터 생성**. Union KM 계산, 특정 km 할인율 조회(`rateAt`), 순위(`rankAt`), 최대 할인(`maxDiscount`), 계단형 점 생성(`buildSeries`), 할인 금액(`amountAt`, 엑셀과 같은 원 단위 반올림) |
-| `src/main.ts` | 화면: 계단형 그래프(Chart.js), 보험료·km 입력·슬라이더·필수 지점 버튼, 순위표(할인액·할인 후 금액 포함), 보험사별 최대 할인율·자료 상태, Union KM, 별도 표·출처 |
+| `src/lib/normalize.ts` | **그래프용 데이터 생성**. Union KM 계산, 특정 km 할인율 조회(`rateAt`), 순위(`rankAt`), 최대 할인(`maxDiscount`), 계단형 점 생성(`buildSeries`), 할인 금액(`amountAt`, 엑셀과 같은 원 단위 반올림), 주행거리 지점별 표(`pointRows`) |
+| `src/main.ts` | 화면: 계단형 그래프(Chart.js), 보험료·km 입력·슬라이더·필수 지점 버튼, 순위표(할인액·할인 후 금액 포함), 500km 간격 주행거리별 할인율 표(할인율/할인 후 금액 전환), 보험사별 최대 할인율·자료 상태, Union KM, 별도 표·출처 |
 | `scripts/build_excel.py` | 엑셀 계산기 생성 |
 | `마일리지_할인_계산기.xlsx` | 엑셀 계산기 |
-| `tests/` | 로직 단위 테스트 18개 + 실데이터 검증 31개 |
+| `tests/` | 로직 단위 테스트 22개 + 실데이터 검증 33개 |
 | `.github/workflows/pages.yml` | main 에 push 하면 테스트 → 빌드 → GitHub Pages 배포 |
 
 ### 할인율 조회 규칙 (`rateAt`)

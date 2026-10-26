@@ -98,3 +98,29 @@ export function amountAt(premium: number | null, l: Lookup): { discount: number;
   const discount = Math.round((premium * l.rate) / 100)
   return { discount, after: premium - discount }
 }
+
+export interface PointRow {
+  km: number
+  /** insurers 와 같은 순서 */
+  lookups: Lookup[]
+  best: number | null
+}
+
+/**
+ * 주행거리 지점별 할인율 표. step 간격 지점과 Union KM 경계값을 모두 행으로 만들고,
+ * 마지막 경계값 바로 다음 step 까지 포함해 할인이 끝나는 지점도 보이게 한다.
+ */
+export function pointRows(insurers: Insurer[], step: number): PointRow[] {
+  const union = unionKm(insurers)
+  if (union.length === 0) return []
+  const last = union[union.length - 1]
+  const kms = new Set(union.filter((k) => k > 0))
+  for (let k = step; k <= last + step; k += step) kms.add(k)
+  return [...kms]
+    .sort((a, b) => a - b)
+    .map((km) => {
+      const lookups = insurers.map((ins) => rateAt(ins, km))
+      const rates = lookups.flatMap((l) => (l.rate === null ? [] : [l.rate]))
+      return { km, lookups, best: rates.length ? Math.max(...rates) : null }
+    })
+}

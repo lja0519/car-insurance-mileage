@@ -51,6 +51,18 @@
       </section>
 
       <section class="panel">
+        <h2>주행거리별 할인율 표</h2>
+        <p class="hint" id="matrix-hint"></p>
+        <div class="view-toggle" id="matrix-view" role="group" aria-label="표시 값">
+          <button data-view="rate" class="active">할인율</button>
+          <button data-view="after">할인 후 금액</button>
+        </div>
+        <div class="table-scroll matrix-scroll">
+          <table id="matrix"><thead></thead><tbody></tbody></table>
+        </div>
+      </section>
+
+      <section class="panel">
         <h2>보험사별 최대 할인율 · 자료 상태</h2>
         <div class="table-scroll">
           <table id="summary">

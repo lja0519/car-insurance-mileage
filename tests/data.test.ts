@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import rawJson from '../data/raw_discounts.json'
-import { buildSeries, rateAt, unionKm } from '../src/lib/normalize'
+import { buildSeries, pointRows, rateAt, unionKm } from '../src/lib/normalize'
 import type { RawData } from '../src/lib/types'
 
 const raw = rawJson as RawData
@@ -75,5 +75,17 @@ describe('chart vs table consistency on real data', () => {
         } else expect(covering, `${ins.name} ${km}`).toContain(l.rate)
       }
     }
+  })
+})
+
+describe('distance table on real data', () => {
+  it('includes every union boundary (except 0) as its own row', () => {
+    const kms = pointRows(raw.insurers, 500).map((r) => r.km)
+    for (const k of unionKm(raw.insurers).filter((k) => k > 0)) expect(kms).toContain(k)
+  })
+
+  it('row values equal the comparison table lookup at the same distance', () => {
+    for (const row of pointRows(raw.insurers, 500))
+      raw.insurers.forEach((ins, i) => expect(row.lookups[i].rate, `${ins.name} ${row.km}`).toBe(rateAt(ins, row.km).rate))
   })
 })

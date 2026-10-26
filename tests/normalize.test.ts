@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { amountAt, buildSeries, maxDiscount, rankAt, rateAt, unionKm } from '../src/lib/normalize'
+import { amountAt, buildSeries, maxDiscount, pointRows, rankAt, rateAt, unionKm } from '../src/lib/normalize'
 import type { Band, DiscountTable, Insurer } from '../src/lib/types'
 
 const band = (min: number, max: number, rate: number, maxInc: boolean | null = true): Band => ({
@@ -151,5 +151,29 @@ describe('amountAt', () => {
   it('returns null without a valid premium', () => {
     expect(amountAt(null, rateAt(A, 2500))).toBeNull()
     expect(amountAt(-1, rateAt(A, 2500))).toBeNull()
+  })
+})
+
+describe('pointRows', () => {
+  it('lists every step from step to one step past the last boundary, plus every union boundary', () => {
+    expect(pointRows([A, B], 1500).map((r) => r.km)).toEqual([1500, 2000, 3000, 4000, 4500, 5000, 6000, 7500])
+  })
+
+  it('gives each insurer its rate at exactly that distance, without interpolation', () => {
+    const rows = pointRows([A, B, U], 1000)
+    const at = (km: number) => rows.find((r) => r.km === km)!.lookups
+    expect(at(2000).map((l) => l.rate)).toEqual([45, 40, null])
+    expect(at(3000).map((l) => l.rate)).toEqual([38, 20, null])
+    expect(at(7000).map((l) => l.reason)).toEqual(['beyond_max', 'beyond_max', 'unverified'])
+  })
+
+  it('marks the best rate in each row', () => {
+    const rows = pointRows([A, B, U], 1000)
+    expect(rows[0].best).toBe(45)
+    expect(rows.at(-1)!.best).toBeNull()
+  })
+
+  it('is empty when no insurer has a table', () => {
+    expect(pointRows([U], 500)).toEqual([])
   })
 })

@@ -8,7 +8,7 @@ import {
   type Plugin,
 } from 'chart.js'
 import rawJson from '../data/raw_discounts.json'
-import { amountAt, buildSeries, maxDiscount, rankAt, unionKm } from './lib/normalize'
+import { amountAt, buildSeries, maxDiscount, pointRows, rankAt, unionKm } from './lib/normalize'
 import type { Insurer, Lookup, RawData, VerificationStatus } from './lib/types'
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, Legend)
@@ -16,6 +16,7 @@ Chart.register(LineController, LineElement, PointElement, LinearScale, Legend)
 const raw = rawJson as RawData
 const insurers = raw.insurers
 const UNION = unionKm(insurers)
+const MATRIX_STEP = 500
 const PRESETS = [1000, 2500, 3000, 4500, 5000, 7000, 9000, 11000, 12000, 15000]
 const COLORS = ['#2a6df4', '#e8590c', '#2f9e44', '#c2255c', '#7048e8', '#0c8599', '#a87c00', '#5c5f66', '#d6336c']
 const SLIDER_MAX = Math.max(UNION[UNION.length - 1] ?? 0, PRESETS[PRESETS.length - 1]) + 2000
@@ -225,6 +226,47 @@ function select(km: number, from?: 'input' | 'slider') {
   chart.draw()
 }
 
+// ---------- 주행거리별 할인율 표 ----------
+const MATRIX = pointRows(insurers, MATRIX_STEP)
+let matrixView: 'rate' | 'after' = 'rate'
+
+$('#matrix-hint').textContent =
+  `${MATRIX_STEP.toLocaleString('ko-KR')}km 간격 지점과 모든 구간 경계값의 할인율입니다. 공식 표의 'N km 이하' 규칙대로 ` +
+  '경계값에는 그 아래 구간 할인율이 적용됩니다. 행마다 가장 유리한 값을 강조했고, 행을 누르면 그 거리로 이동합니다.'
+$('#matrix thead').innerHTML =
+  `<tr><th>주행거리</th>${insurers.map((ins) => `<th class="num"><span class="swatch" style="background:${colorOf(ins)}"></span>${esc(ins.name)}</th>`).join('')}</tr>`
+$('#matrix tbody').addEventListener('click', (e) => {
+  const km = (e.target as HTMLElement).closest('tr')?.dataset.km
+  if (km) select(Number(km))
+})
+$('#matrix-view').addEventListener('click', (e) => {
+  const view = (e.target as HTMLElement).dataset.view as typeof matrixView | undefined
+  if (!view || (view === 'after' && premium === null)) return
+  matrixView = view
+  renderMatrix()
+})
+
+function renderMatrix() {
+  if (premium === null) matrixView = 'rate'
+  for (const b of document.querySelectorAll<HTMLButtonElement>('#matrix-view button')) {
+    b.classList.toggle('active', b.dataset.view === matrixView)
+    if (b.dataset.view === 'after') {
+      b.disabled = premium === null
+      b.title = premium === null ? '할인 전 보험료를 입력하면 볼 수 있습니다' : ''
+    }
+  }
+  $('#matrix tbody').innerHTML = MATRIX.map((row) => {
+    const cells = row.lookups.map((l, i) => {
+      const isBest = l.rate !== null && l.rate === row.best
+      if (l.rate === null) return `<td class="num na">${esc(describe(insurers[i], l).rate)}</td>`
+      const text = matrixView === 'after' ? fmtWon(amountAt(premium, l)!.after) : `${l.rate}%`
+      return `<td class="num${isBest ? ' best' : ''}">${text}</td>`
+    })
+    const sel = row.km === selectedKm ? ' class="selected"' : ''
+    return `<tr data-km="${row.km}"${sel}><th scope="row">${fmtKm(row.km)}</th>${cells.join('')}</tr>`
+  }).join('')
+}
+
 function renderTable() {
   $('#table-title').textContent = `${fmtKm(selectedKm)} 기준 보험사 순위`
   const ranked = rankAt(insurers, selectedKm)
@@ -259,6 +301,7 @@ function renderTable() {
       </tr>`
     })
     .join('')
+  renderMatrix()
 }
 
 function renderSummary() {
