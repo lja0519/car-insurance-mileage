@@ -81,7 +81,7 @@ td.wrap { white-space: normal; min-width: 260px; }
 .view-toggle button { border: 0; background: var(--bg); color: var(--text); padding: 5px 12px; font-size: 0.85rem; cursor: pointer; }
 .view-toggle button.active { background: var(--accent); color: #fff; }
 .view-toggle button:disabled { color: var(--muted); cursor: not-allowed; }
-.matrix-scroll { max-height: 560px; overflow: auto; }
+.matrix-scroll { max-height: 70vh; max-height: 70dvh; overflow: auto; overscroll-behavior: contain; }
 #matrix thead th { position: sticky; top: 0; background: var(--panel); z-index: 2; }
 #matrix th:first-child { position: sticky; left: 0; background: var(--panel); z-index: 1; text-align: left; }
 #matrix thead th:first-child { z-index: 3; }
