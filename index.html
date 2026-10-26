@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>마일리지 할인율 비교</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>자동차보험 마일리지 특약 할인율 비교</h1>
+        <p class="sub" id="basis"></p>
+      </header>
+
+      <section class="panel controls">
+        <label class="km-input">
+          할인 전 보험료
+          <span><input id="premium" type="text" inputmode="numeric" placeholder="예: 1,000,000" autocomplete="off" /> 원</span>
+        </label>
+        <label class="km-input">
+          연간 주행거리
+          <span><input id="km" type="number" inputmode="numeric" min="0" step="100" /> km</span>
+        </label>
+        <input id="slider" type="range" min="0" step="100" aria-label="주행거리 슬라이더" />
+        <div class="presets" id="presets" role="group" aria-label="필수 비교 지점"></div>
+      </section>
+
+      <section class="panel">
+        <h2>주행거리별 할인율 (계단형)</h2>
+        <p class="hint">구간표 그대로 그린 계단형입니다. 구간 사이는 보간하지 않았고, 확인되지 않은 구간과 할인 대상이 아닌 거리는 선을 그리지 않았습니다. 범례를 누르면 해당 보험사 선을 숨기거나 다시 표시합니다.</p>
+        <div class="chart-wrap"><canvas id="chart"></canvas></div>
+      </section>
+
+      <section class="panel">
+        <h2 id="table-title"></h2>
+        <p class="hint" id="amount-summary"></p>
+        <div class="table-scroll">
+          <table id="compare">
+            <thead>
+              <tr>
+                <th>순위</th><th>보험사</th><th class="num">주행거리</th><th class="num">할인율</th>
+                <th class="num">할인액</th><th class="num">할인 후 금액</th>
+                <th>적용 구간</th><th>값 구분</th><th>자료 기준일</th><th>검증</th><th>출처</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>보험사별 최대 할인율 · 자료 상태</h2>
+        <div class="table-scroll">
+          <table id="summary">
+            <thead>
+              <tr>
+                <th>보험사</th><th class="num">최대 할인율</th><th>해당 구간</th><th class="num">할인 최대 거리</th>
+                <th>할인 방식</th><th>계기판 사진</th><th>채널</th><th>기준일</th><th>검증</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Union KM (전체 구간 경계값)</h2>
+        <p class="hint">비교 기준 표에 나온 모든 보험사의 구간 경계값을 합치고 중복을 없앤 뒤 오름차순으로 정렬했습니다. 값을 누르면 그 거리로 이동합니다.</p>
+        <div class="union" id="union"></div>
+      </section>
+
+      <section class="panel">
+        <h2>별도 할인율표 · 참고 사항</h2>
+        <div id="notes"></div>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
