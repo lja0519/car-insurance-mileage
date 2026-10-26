@@ -176,4 +176,19 @@ describe('pointRows', () => {
   it('is empty when no insurer has a table', () => {
     expect(pointRows([U], 500)).toEqual([])
   })
+
+  it('reports max-min spread in %p over insurers with a rate only (missing is not 0%)', () => {
+    const rows = pointRows([A, B, U], 1000)
+    const at = (km: number) => rows.find((r) => r.km === km)!
+    expect(at(1000).spread).toBe(5) // 45 vs 40, U 미확인 제외
+    expect(at(3000).spread).toBe(18) // 38 vs 20
+    expect(at(6000).spread).toBeNull() // A 30% 하나뿐, B 는 할인 없음
+    expect(at(7000).spread).toBeNull()
+  })
+
+  it('rounds the spread to 0.1%p to avoid float noise', () => {
+    const X = insurer('X', [band(0, 1000, 38.9)])
+    const Y = insurer('Y', [band(0, 1000, 35.3)])
+    expect(pointRows([X, Y], 1000)[0].spread).toBe(3.6)
+  })
 })

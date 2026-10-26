@@ -104,6 +104,8 @@ export interface PointRow {
   /** insurers 와 같은 순서 */
   lookups: Lookup[]
   best: number | null
+  /** 할인율이 있는 보험사 중 최대-최소 (%p, 소수 1자리). 2곳 미만이면 null */
+  spread: number | null
 }
 
 /**
@@ -121,6 +123,7 @@ export function pointRows(insurers: Insurer[], step: number): PointRow[] {
     .map((km) => {
       const lookups = insurers.map((ins) => rateAt(ins, km))
       const rates = lookups.flatMap((l) => (l.rate === null ? [] : [l.rate]))
-      return { km, lookups, best: rates.length ? Math.max(...rates) : null }
+      const spread = rates.length >= 2 ? Math.round((Math.max(...rates) - Math.min(...rates)) * 10) / 10 : null
+      return { km, lookups, best: rates.length ? Math.max(...rates) : null, spread }
     })
 }
